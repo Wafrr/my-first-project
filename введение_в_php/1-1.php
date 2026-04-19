@@ -7,6 +7,6 @@ $bool = TRUE;
 $string2 = "1234";
 $float = 25.89;  
 
-echo $num . "<br/>" . $string . "<br/>" . $bool . "<br/>" . $string2 . "<br/>" . $float;
+echo $num . "\n" . $string . "\n" . $bool . "\n" . $string2 . "\n" . $float;
 
 ?>
