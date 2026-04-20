@@ -60,9 +60,9 @@ if (isset($_GET['logout'])) {
         <?php if (isLoggedIn()): ?>
             <!-- Панель пользователя -->
             <div class="header">
-                <h1>📝 My Notes</h1>
+                <h1>My Notes</h1>
                 <div class="user-info">
-                    <span>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</span>
+                    <span>Welcome, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'User'); ?>!</span>
                     <a href="?logout" class="btn btn-logout">Logout</a>
                     <a href="create_note.php" class="btn btn-primary">+ New Note</a>
                 </div>
@@ -93,15 +93,15 @@ if (isset($_GET['logout'])) {
                                 </div>
                             </div>
                             <div class="note-body">
-                                <?php echo nl2br(htmlspecialchars(substr($note['body'], 0, 150))); ?>
-                                <?php echo strlen($note['body']) > 150 ? '...' : ''; ?>
+                                <?php echo nl2br(htmlspecialchars(substr($note['body'] ?? '', 0, 150))); ?>
+                                <?php echo strlen($note['body'] ?? '') > 150 ? '...' : ''; ?>
                             </div>
                             <div class="note-footer">
                                 <small>Updated: <?php echo date('M d, Y', strtotime($note['updated_at'])); ?></small>
-                                <?php if ($note['tags']): ?>
+                                <?php if (isset($note['tags']) && $note['tags']): ?>
                                     <div class="tags">
                                         <?php foreach(explode(',', $note['tags']) as $tag): ?>
-                                            <span class="tag">#<?php echo htmlspecialchars($tag); ?></span>
+                                            <span class="tag">#<?php echo htmlspecialchars(trim($tag)); ?></span>
                                         <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
