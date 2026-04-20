@@ -1,0 +1,15 @@
+/*
+Задание (оформление к задаче 14):
+Попробуйте подключить к странице стили CSS, чтобы оформить содержимое.
+*/
+
+.admin-block {
+    padding: 12px;
+    border: 1px solid #8bd;
+    background: #eef8ff;
+    border-radius: 8px;
+}
+
+.no-access {
+    color: #b00020;
+}
