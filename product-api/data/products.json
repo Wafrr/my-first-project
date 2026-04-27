@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "title": "Клавиатура",
+        "price": 3500,
+        "inStock": true
+    },
+    {
+        "id": 2,
+        "title": "Мышь",
+        "price": 1500,
+        "inStock": true
+    }
+]
