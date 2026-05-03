@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', 'Fira Code', monospace;
+    background: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.app {
+    max-width: 600px;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 4px 4px 0px 0px #000000;
+}
+
+header {
+    padding: 24px 24px 16px 24px;
+    border-bottom: 1px solid #cccccc;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: #111111;
+    font-family: 'Courier New', monospace;
+}
+
+.subtitle {
+    font-size: 12px;
+    color: #666666;
+    margin-top: 6px;
+    font-family: monospace;
+}
+
+main {
+    padding: 24px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+    resize: vertical;
+    color: #111111;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #000000;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 400;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    color: #111111;
+}
+
+.btn-primary {
+    background: #111111;
+    color: #ffffff;
+    border-color: #111111;
+}
+
+.btn-primary:hover {
+    background: #333333;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.status {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #eeeeee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #666666;
+}
+
+.status__dot {
+    width: 6px;
+    height: 6px;
+    background: #00aa00;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status__text {
+    letter-spacing: 0.3px;
+}
