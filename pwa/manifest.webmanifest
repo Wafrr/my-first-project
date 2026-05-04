@@ -1,0 +1,17 @@
+{
+  "name": "Заметки PWA",
+  "short_name": "Заметки",
+  "description": "PWA-приложение для заметок с офлайн-режимом",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0071e3",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
