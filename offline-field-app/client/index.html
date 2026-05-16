@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline Requests</title>
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+  <header>
+    <h1>Заявки</h1>
+
+    <div id="network-status" class="offline">
+      Offline
+    </div>
+  </header>
+
+  <section class="filters">
+    <select id="status-filter">
+      <option value="all">Все статусы</option>
+      <option value="open">Open</option>
+      <option value="in_progress">In Progress</option>
+      <option value="done">Done</option>
+    </select>
+
+    <select id="priority-filter">
+      <option value="all">Все приоритеты</option>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+  </section>
+
+  <section class="form-section">
+    <form id="request-form">
+      <input
+        type="text"
+        id="title"
+        placeholder="Название заявки"
+        required
+      />
+
+      <textarea
+        id="description"
+        placeholder="Описание"
+      ></textarea>
+
+      <select id="priority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
+      <button type="submit">
+        Создать заявку
+      </button>
+    </form>
+  </section>
+
+  <section>
+    <div id="requests-list"></div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
