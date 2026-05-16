@@ -6,22 +6,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Server is working');
-});
+let requests = [];
 
 app.get('/api/requests', (req, res) => {
-  res.json([
-    {
-      id: 1,
-      title: 'Test request',
-      status: 'open'
-    }
-  ]);
+  res.json(requests);
 });
 
-const PORT = 3000;
+app.post('/api/requests', (req, res) => {
+  const newRequest = {
+    id: Date.now(),
+    ...req.body
+  };
 
-app.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
+  requests.push(newRequest);
+
+  res.status(201).json(newRequest);
+});
+
+app.listen(3000, () => {
+  console.log('Server started on http://localhost:3000');
 });
