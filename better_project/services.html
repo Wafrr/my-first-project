@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Все услуги — Социальная помощь онлайн</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f8fe;
+            color: #0a2a3b;
+            line-height: 1.45;
+        }
+
+        :root {
+            --primary: #0b2b42;
+            --primary-dark: #041e2e;
+            --accent: #d4af37;
+            --accent-light: #fef3ce;
+            --gray-muted: #5f7f9a;
+            --border-light: #e3eef5;
+            --card-radius: 28px;
+            --btn-radius: 44px;
+            --shadow-card: 0 16px 30px -12px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02);
+            --shadow-hover: 0 28px 38px -16px rgba(0, 0, 0, 0.12);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 28px;
+        }
+
+        /* navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 110;
+            backdrop-filter: blur(0px);
+        }
+
+        .nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--primary);
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 8px 14px rgba(11, 43, 66, 0.1);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--primary);
+        }
+
+        .logo-text span {
+            font-size: 0.7rem;
+            background: var(--accent-light);
+            padding: 2px 12px;
+            border-radius: 30px;
+            margin-left: 8px;
+            font-weight: 600;
+            color: #7a5c1a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #1f4b65;
+            transition: 0.2s;
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 4px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .btn-outline {
+            border: 1.5px solid var(--accent);
+            background: transparent;
+            padding: 8px 22px;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            color: var(--primary);
+            transition: 0.2s;
+        }
+
+        /* breadcrumbs */
+        .breadcrumb {
+            margin: 28px 0 18px;
+            font-size: 0.85rem;
+            color: var(--gray-muted);
+        }
+        .breadcrumb a {
+            text-decoration: none;
+            color: var(--primary);
+        }
+        .breadcrumb span {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* заголовок */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+            gap: 20px;
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .page-header p {
+            color: var(--gray-muted);
+            margin-top: 8px;
+        }
+
+        /* поиск + фильтры */
+        .filter-bar {
+            background: white;
+            border-radius: 80px;
+            padding: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-light);
+        }
+        .search-box {
+            flex: 3;
+            display: flex;
+            align-items: center;
+            background: #f9fdfe;
+            border-radius: 60px;
+            padding: 6px 18px;
+            gap: 12px;
+        }
+        .search-box i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 14px 0;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            padding-right: 12px;
+        }
+        .filter-select {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--border-light);
+            background: white;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--primary);
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* сетка карточек услуг */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+            margin-bottom: 56px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 28px 24px;
+            transition: all 0.25s ease;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .card-icon {
+            font-size: 2.4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            background: #fdf9ed;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+        }
+
+        .service-card h3 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .service-desc {
+            color: var(--gray-muted);
+            margin-bottom: 20px;
+            line-height: 1.45;
+            flex-grow: 1;
+        }
+
+        .service-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 18px;
+        }
+        .tag {
+            background: #f0f6fa;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .btn-service {
+            background: none;
+            border: none;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .btn-service i {
+            transition: 0.2s;
+        }
+        .btn-service:hover {
+            color: #b38f2a;
+        }
+        .btn-service:hover i {
+            transform: translateX(4px);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 48px;
+            color: var(--gray-muted);
+        }
+
+        /* пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 30px 0 50px;
+        }
+        .page-btn {
+            background: white;
+            border: 1px solid var(--border-light);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* тост */
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0b2b42;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            background: #0a1c2a;
+            color: #bbd4e8;
+            padding: 36px 0 20px;
+            margin-top: 20px;
+        }
+        .footer-text {
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 760px) {
+            .filter-bar {
+                border-radius: 32px;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .filter-group {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="container">
+        <div class="nav-flex">
+            <a href="#" class="logo-area" style="text-decoration: none;">
+                <div class="logo-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                <div class="logo-text"><h1>СоцПомощь<span>Премиум</span></h1></div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="services.html" class="active">Услуги</a>
+                <a href="#">О проекте</a>
+                <a href="#" class="btn-outline">Войти</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="#">Главная</a> / <span>Все услуги</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h1><i class="fas fa-list-ul" style="color: var(--accent); margin-right: 12px;"></i> Государственные услуги</h1>
+            <p>Поддержка семьи, здоровья, жилья и работы — более 60 сервисов в одном окне</p>
+        </div>
+        <div class="stats-badge" style="background: white; padding: 8px 18px; border-radius: 60px; font-weight: 600;">
+            <i class="fas fa-check-circle" style="color: var(--accent);"></i> 58 услуг доступно
+        </div>
+    </div>
+
+    <!-- фильтр и поиск -->
+    <div class="filter-bar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Поиск услуги... Например: пособие, жильё, лекарства">
+        </div>
+        <div class="filter-group">
+            <select id="categoryFilter" class="filter-select">
+                <option value="all">Все категории</option>
+                <option value="family">Семья и дети</option>
+                <option value="pension">Пенсионеры / Инвалиды</option>
+                <option value="housing">Жильё и ЖКУ</option>
+                <option value="work">Работа и соцконтракт</option>
+                <option value="health">Здоровье и лекарства</option>
+            </select>
+            <select id="sortSelect" class="filter-select">
+                <option value="default">По умолчанию</option>
+                <option value="name">По названию</option>
+                <option value="popular">По популярности</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- сетка карточек -->
+    <div id="servicesContainer" class="services-grid"></div>
+
+    <!-- пагинация (для красоты и демо) -->
+    <div class="pagination" id="paginationControls"></div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-text">
+            <p>© 2026 Социальный портал «СоцПомощь» — современная платформа помощи гражданам. Данные носят информационный характер.</p>
+        </div>
+    </div>
+</footer>
+
+<div id="toastMsg" class="toast-msg"></div>
+
+<script>
+    // ----- БАЗА УСЛУГ (социально значимые, похоже на госуслуги но с премиум стилем) -----
+    const servicesData = [
+        { id: 1, name: "Ежемесячное пособие на ребёнка", category: "family", desc: "Выплата для семей с низким доходом от 0 до 17 лет. Размер до 100% прожиточного минимума.", icon: "fas fa-baby-carriage", popular: 98 },
+        { id: 2, name: "Субсидия на оплату ЖКУ", category: "housing", desc: "Компенсация расходов на коммунальные услуги до 50% при высоких платежах.", icon: "fas fa-home", popular: 92 },
+        { id: 3, name: "Социальный контракт", category: "work", desc: "Помощь в преодолении трудной жизненной ситуации: выплаты, обучение, открытие бизнеса.", icon: "fas fa-handshake", popular: 86 },
+        { id: 4, name: "Обеспечение лекарствами льготников", category: "health", desc: "Бесплатные рецептурные препараты для инвалидов, ветеранов и хронических больных.", icon: "fas fa-pills", popular: 79 },
+        { id: 5, name: "Путёвка в санаторий", category: "health", desc: "Льготное санаторно-курортное лечение для пенсионеров и детей-инвалидов.", icon: "fas fa-spa", popular: 68 },
+        { id: 6, name: "Единовременное пособие при рождении", category: "family", desc: "Разовое пособие ~25 000 ₽ на каждого новорождённого. Оформление онлайн.", icon: "fas fa-birthday-cake", popular: 95 },
+        { id: 7, name: "Технические средства реабилитации", category: "pension", desc: "Коляски, слуховые аппараты, абсорбирующее бельё — по индивидуальной программе.", icon: "fas fa-wheelchair", popular: 74 },
+        { id: 8, name: "Материнский (семейный) капитал", category: "family", desc: "Сертификат на сумму 833 024 ₽ (индексация 2026). Распоряжение: жильё, образование, накопительная пенсия.", icon: "fas fa-children", popular: 99 },
+        { id: 9, name: "Помощь безработным", category: "work", desc: "Пособие по безработице, переобучение, содействие в трудоустройстве.", icon: "fas fa-briefcase", popular: 84 },
+        { id: 10, name: "Доплата к пенсии неработающим", category: "pension", desc: "Индексация и региональные доплаты до прожиточного минимума пенсионера.", icon: "fas fa-user-graduate", popular: 88 },
+        { id: 11, name: "Выплата на школьную форму", category: "family", desc: "Ежегодная помощь к 1 сентября для многодетных и малоимущих.", icon: "fas fa-backpack", popular: 71 },
+        { id: 12, name: "Капитальный ремонт жилья для ветеранов", category: "housing", desc: "Компенсация расходов на капремонт участникам ВОВ и приравненным.", icon: "fas fa-hard-hat", popular: 62 }
+    ];
+
+    let currentPage = 1;
+    const itemsPerPage = 9;
+    let currentSearch = "";
+    let currentCategory = "all";
+    let currentSort = "default";
+
+    // фильтрация + поиск + сортировка
+    function filterAndSortServices() {
+        let filtered = [...servicesData];
+        // поиск по названию и описанию
+        if (currentSearch.trim() !== "") {
+            const query = currentSearch.toLowerCase();
+            filtered = filtered.filter(service => 
+                service.name.toLowerCase().includes(query) || 
+                service.desc.toLowerCase().includes(query)
+            );
+        }
+        // категория
+        if (currentCategory !== "all") {
+            filtered = filtered.filter(service => service.category === currentCategory);
+        }
+        // сортировка
+        if (currentSort === "name") {
+            filtered.sort((a,b) => a.name.localeCompare(b.name));
+        } else if (currentSort === "popular") {
+            filtered.sort((a,b) => b.popular - a.popular);
+        } else {
+            // default: по id
+            filtered.sort((a,b) => a.id - b.id);
+        }
+        return filtered;
+    }
+
+    // отрисовка карточек с пагинацией
+    function renderServices() {
+        const filtered = filterAndSortServices();
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+        const start = (currentPage - 1) * itemsPerPage;
+        const paginatedServices = filtered.slice(start, start + itemsPerPage);
+        const container = document.getElementById("servicesContainer");
+        
+        if (paginatedServices.length === 0) {
+            container.innerHTML = `<div class="no-results"><i class="fas fa-box-open" style="font-size: 2.5rem; margin-bottom: 12px; display: block;"></i>Ничего не найдено.<br>Попробуйте изменить фильтры или поиск.</div>`;
+            document.getElementById("paginationControls").innerHTML = "";
+            return;
+        }
+        
+        container.innerHTML = paginatedServices.map(service => `
+            <div class="service-card" data-id="${service.id}">
+                <div class="card-icon"><i class="${service.icon}"></i></div>
+                <h3>${escapeHtml(service.name)}</h3>
+                <div class="service-desc">${escapeHtml(service.desc)}</div>
+                <div class="service-meta">
+                    <span class="tag"><i class="far fa-clock"></i> от 3 рабочих дней</span>
+                    <button class="btn-service" data-servicename="${escapeHtml(service.name)}">Оформить <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        `).join("");
+        
+        // пагинация
+        const paginationDiv = document.getElementById("paginationControls");
+        if (totalPages <= 1) {
+            paginationDiv.innerHTML = "";
+            return;
+        }
+        let pagesHtml = `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled style="opacity:0.4"' : ''}>← Назад</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            pagesHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        pagesHtml += `<button class="page-btn" data-page="next" ${currentPage === totalPages ? 'disabled style="opacity:0.4"' : ''}>Вперёд →</button>`;
+        paginationDiv.innerHTML = pagesHtml;
+        
+        // добавить события на кнопки пагинации
+        document.querySelectorAll(".page-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const pageVal = btn.getAttribute("data-page");
+                if (pageVal === "prev" && currentPage > 1) currentPage--;
+                else if (pageVal === "next" && currentPage < totalPages) currentPage++;
+                else if (!isNaN(parseInt(pageVal))) currentPage = parseInt(pageVal);
+                renderServices();
+                window.scrollTo({ top: 300, behavior: "smooth" });
+            });
+        });
+        
+        // добавить обработчики на кнопки "Оформить" внутри карточек (динамически)
+        document.querySelectorAll(".btn-service").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const serviceName = btn.getAttribute("data-servicename") || "услугу";
+                showToast(`📄 Вы выбрали: «${serviceName}». Перенаправление на форму подачи заявления (демо-режим).`);
+            });
+        });
+    }
+    
+    // простой escape для безопасности
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+    
+    // тост
+    function showToast(message, isError = false) {
+        const toast = document.getElementById("toastMsg");
+        toast.textContent = message;
+        toast.style.backgroundColor = isError ? "#b91c1c" : "#0b2b42";
+        toast.style.opacity = "1";
+        setTimeout(() => {
+            toast.style.opacity = "0";
+        }, 2800);
+    }
+    
+    // обработчики фильтров
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const sortSelect = document.getElementById("sortSelect");
+    
+    function updateFilters() {
+        currentSearch = searchInput.value;
+        currentCategory = categoryFilter.value;
+        currentSort = sortSelect.value;
+        currentPage = 1;
+        renderServices();
+    }
+    
+    searchInput.addEventListener("input", updateFilters);
+    categoryFilter.addEventListener("change", updateFilters);
+    sortSelect.addEventListener("change", updateFilters);
+    
+    // демо для навигационных ссылок (чтобы не уходили)
+    const navLinks = document.querySelectorAll(".nav-links a, .logo-area");
+    navLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            if (link.getAttribute("href") === "#" || link.getAttribute("href") === "") {
+                e.preventDefault();
+                if (link.innerText.includes("Услуги")) return;
+                showToast("🔐 Демо-версия портала. Раздел будет доступен в полной версии.");
+            }
+        });
+    });
+    
+    // инициализация
+    renderServices();
+</script>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детектив: Полуночный дозор</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0c12 0%, #000000 100%);
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #00ffaa;
+        }
+
+        .game-container {
+            background: #0f0f1a;
+            border: 3px solid #2a3f3a;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,255,170,0.2);
+            width: 900px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #050508;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .cameras {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .camera {
+            background: #000000;
+            border: 2px solid #2a4a44;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .camera:hover {
+            border-color: #00ffaa;
+            box-shadow: 0 0 10px #00ffaa;
+        }
+
+        .camera.selected {
+            border-color: #ffaa00;
+            background: #11100a;
+        }
+
+        .camera-feed {
+            background: #0a0a0a;
+            height: 150px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-name {
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+            font-size: 12px;
+            background: black;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .danger {
+            color: red;
+            font-weight: bold;
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .evidence-log {
+            background: #050508;
+            border: 1px solid #2a4a44;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            height: 120px;
+            overflow-y: auto;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            background: #0a2a24;
+            border: 2px solid #00aa77;
+            color: #00ffaa;
+            padding: 12px 24px;
+            font-family: monospace;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #00aa77;
+            color: black;
+            box-shadow: 0 0 10px #00ffaa;
+        }
+
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: black;
+            border: 5px solid red;
+            padding: 40px;
+            text-align: center;
+            z-index: 100;
+            border-radius: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .door-closed {
+            background: #2a2000;
+            border-color: #ff6600;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container" id="game">
+    <div class="stats">
+        <span>🕒 ВРЕМЯ: <span id="time">06:00</span></span>
+        <span>📋 УЛИКИ: <span id="evidenceCount">0</span>/5</span>
+        <span>🧠 КОНЦЕНТРАЦИЯ: <span id="focus">100</span>%</span>
+        <span id="doorState">🚪 ДВЕРЬ: ОТКРЫТА</span>
+    </div>
+
+    <div class="cameras" id="cameras">
+        <!-- 4 камеры будут сгенерированы JS -->
+    </div>
+
+    <div class="evidence-log" id="log">
+        [СИСТЕМА] Добро пожаловать, детектив. Соберите 5 улик до 6 утра...
+    </div>
+
+    <div class="controls">
+        <button id="toggleDoor">🚪 ЗАКРЫТЬ ДВЕРЬ</button>
+        <button id="analyzeBtn">🔍 АНАЛИЗ УЛИКИ</button>
+    </div>
+</div>
+
+<script>
+    // ========== СОСТОЯНИЕ ИГРЫ ==========
+    let gameActive = true;
+    let evidence = 0;
+    let focus = 100;
+    let timeMinutes = 6;
+    let timeSeconds = 0;
+    let doorClosed = false;
+    
+    // Карта убийцы: каждая комната имеет соседей (для перемещения)
+    const rooms = ['Гостиная', 'Кабинет', 'Кухня', 'Коридор'];
+    let killerPosition = 'Кухня'; // Старт
+    let evidenceRooms = {
+        'Гостиная': false,
+        'Кабинет': false,
+        'Кухня': false,
+        'Коридор': false
+    };
+    let foundEvidence = [];
+    
+    // Выбранная камера
+    let selectedRoom = 'Гостиная';
+    
+    // DOM элементы
+    const timeSpan = document.getElementById('time');
+    const evidenceSpan = document.getElementById('evidenceCount');
+    const focusSpan = document.getElementById('focus');
+    const doorStateSpan = document.getElementById('doorState');
+    const logDiv = document.getElementById('log');
+    const camerasDiv = document.getElementById('cameras');
+    const toggleDoorBtn = document.getElementById('toggleDoor');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    
+    // Добавляем сообщение в лог
+    function addLog(msg, isError = false) {
+        const p = document.createElement('div');
+        p.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        if (isError) p.style.color = '#ff5555';
+        else p.style.color = '#aaffaa';
+        logDiv.appendChild(p);
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+    
+    // Обновить UI
+    function updateUI() {
+        timeSpan.innerText = `${String(timeMinutes).padStart(2,'0')}:${String(timeSeconds).padStart(2,'0')}`;
+        evidenceSpan.innerText = evidence;
+        focusSpan.innerText = Math.max(0, Math.floor(focus));
+        doorStateSpan.innerHTML = doorClosed ? '🚪 ДВЕРЬ: ЗАКРЫТА' : '🚪 ДВЕРЬ: ОТКРЫТА';
+        
+        // Рендер камер
+        renderCameras();
+    }
+    
+    // Рендер 4-х камер
+    function renderCameras() {
+        camerasDiv.innerHTML = '';
+        for (let room of rooms) {
+            const isSelected = (selectedRoom === room);
+            const hasEvidence = evidenceRooms[room];
+            const isKillerHere = (killerPosition === room);
+            
+            const camDiv = document.createElement('div');
+            camDiv.className = `camera ${isSelected ? 'selected' : ''}`;
+            camDiv.onclick = () => { selectRoom(room); };
+            
+            let feedContent = '';
+            if (isKillerHere) {
+                feedContent = '<div style="color:red; font-size:40px;">👤🔪</div><div class="danger">!!! УБИЙЦА !!!</div>';
+            } else if (hasEvidence && !foundEvidence.includes(room)) {
+                feedContent = '<div style="font-size:40px;">🔍📄</div><div style="color:#ffaa00;">УЛИКА</div>';
+            } else if (foundEvidence.includes(room)) {
+                feedContent = '<div style="font-size:30px;">✅</div><div>Улика изъята</div>';
+            } else {
+                feedContent = '<div style="font-size:40px;">📷</div><div>Ничего</div>';
+            }
+            
+            camDiv.innerHTML = `
+                <div class="camera-feed">
+                    ${feedContent}
+                    <div class="room-name">${room}</div>
+                </div>
+            `;
+            camerasDiv.appendChild(camDiv);
+        }
+    }
+    
+    function selectRoom(room) {
+        if (!gameActive) return;
+        selectedRoom = room;
+        // Тратим концентрацию
+        focus -= 2;
+        if (focus <= 0) gameLose('Нервное истощение... вы теряете сознание.');
+        updateUI();
+        addLog(`📡 Переключился на камеру в "${room}" (-2 концентрации)`);
+    }
+    
+    // Анализ улики в выбранной комнате
+    function analyzeEvidence() {
+        if (!gameActive) return;
+        if (foundEvidence.includes(selectedRoom)) {
+            addLog(`❌ В "${selectedRoom}" уже нет улики.`, true);
+            return;
+        }
+        if (evidenceRooms[selectedRoom]) {
+            // Нашли улику!
+            evidence++;
+            foundEvidence.push(selectedRoom);
+            addLog(`🔎 УЛИКА НАЙДЕНА в "${selectedRoom}"! (${evidence}/5)`);
+            evidenceRooms[selectedRoom] = false; // улика исчезла
+            
+            // Проверка победы
+            if (evidence >= 5) {
+                gameWin();
+            }
+            
+            focus -= 3;
+            if (focus <= 0) gameLose('Перенапряжение. Вы теряете нить расследования.');
+            updateUI();
+        } else {
+            addLog(`❌ В "${selectedRoom}" нет улики.`, true);
+            focus -= 2;
+            if (focus <= 0) gameLose('Вы слишком долго искали там, где ничего нет...');
+            updateUI();
+        }
+    }
+    
+    // Движение убийцы (каждые 10 секунд реального времени)
+    function moveKiller() {
+        if (!gameActive) return;
+        
+        // Возможные ходы: перемещаемся в соседнюю комнату
+        const adjacents = {
+            'Гостиная': ['Коридор', 'Кабинет'],
+            'Кабинет': ['Гостиная', 'Кухня'],
+            'Кухня': ['Кабинет', 'Коридор'],
+            'Коридор': ['Кухня', 'Гостиная']
+        };
+        const possible = adjacents[killerPosition];
+        if (possible && possible.length) {
+            const newPos = possible[Math.floor(Math.random() * possible.length)];
+            killerPosition = newPos;
+            addLog(`⚠️ [ОПАСНОСТЬ] Убийца переместился в "${killerPosition}"!`);
+            
+            // Проверка: если убийца в коридоре И дверь открыта -> смерть
+            if (killerPosition === 'Коридор' && !doorClosed) {
+                gameLose('🔪 Убийца ворвался в офис! Вы не успели закрыть дверь...');
+            }
+        }
+        updateUI();
+    }
+    
+    // Таймер (каждую секунду)
+    function timerTick() {
+        if (!gameActive) return;
+        
+        // Уменьшаем время
+        if (timeSeconds === 0) {
+            if (timeMinutes === 0) {
+                // Время вышло, но улик <5 -> поражение
+                if (evidence < 5) gameLose('Время вышло. Убийца скрылся. Дело провалено.');
+                return;
+            }
+            timeMinutes--;
+            timeSeconds = 59;
+        } else {
+            timeSeconds--;
+        }
+        
+        // Концентрация падает каждую секунду
+        focus -= 0.5;
+        if (focus <= 0) gameLose('Концентрация иссякла...');
+        
+        updateUI();
+        
+        // Автоматическая победа при сборе улик (дубль на всякий)
+        if (evidence >= 5) gameWin();
+    }
+    
+    function toggleDoor() {
+        if (!gameActive) return;
+        doorClosed = !doorClosed;
+        
+        if (doorClosed) {
+            addLog('🚪 Дверь офиса ЗАКРЫТА. Убийца не войдёт, но тратится энергия.');
+            focus -= 5;
+        } else {
+            addLog('🚪 Дверь офиса ОТКРЫТА. Вы рискуете...');
+        }
+        
+        if (focus <= 0) gameLose('Нет сил даже держать дверь...');
+        
+        // Проверка сразу: если убийца в коридоре и дверь открыта
+        if (killerPosition === 'Коридор' && !doorClosed) {
+            gameLose('🔪 Пока вы возились с дверью, убийца вошёл сзади...');
+        }
+        
+        updateUI();
+    }
+    
+    function gameLose(reason) {
+        if (!gameActive) return;
+        gameActive = false;
+        addLog(`💀 GAME OVER: ${reason}`, true);
+        
+        const loseDiv = document.createElement('div');
+        loseDiv.className = 'game-over';
+        loseDiv.innerHTML = `
+            <h1 style="color:red;">🔪 ВЫ ПРОИГРАЛИ</h1>
+            <p>${reason}</p>
+            <button onclick="location.reload()">🔄 НАЧАТЬ ЗАНОВО</button>
+        `;
+        document.body.appendChild(loseDiv);
+    }
+    
+    function gameWin() {
+        if (!gameActive) return;
+        gameActive = false;
+        addLog(`🏆 ПОБЕДА! Вы собрали 5 улик. Убийца — ${getRandomKillerName()}. Дело раскрыто!`);
+        
+        const winDiv = document.createElement('div');
+        winDiv.className = 'game-over';
+        winDiv.style.borderColor = '#00ffaa';
+        winDiv.innerHTML = `
+            <h1 style="color:#00ffaa;">🕵️‍♂️ ДЕЛО РАСКРЫТО</h1>
+            <p>Вы вычислили убийцу: ${getRandomKillerName()}</p>
+            <p>Спасибо за службу, детектив!</p>
+            <button onclick="location.reload()">🔄 ИГРАТЬ СНОВА</button>
+        `;
+        document.body.appendChild(winDiv);
+    }
+    
+    function getRandomKillerName() {
+        const killers = ['Мистер Смит', 'Леди в чёрном', 'Дворецкий Джонс', 'Психопат в маске'];
+        return killers[Math.floor(Math.random() * killers.length)];
+    }
+    
+    // Генерация улик в случайных комнатах (3-5 штук из 4х)
+    function generateEvidence() {
+        const roomsList = ['Гостиная', 'Кабинет', 'Кухня', 'Коридор'];
+        let evidenceCountToSpawn = 5; // всего улик 5
+        // Размещаем улики с повтором (некоторые комнаты могут иметь несколько, но мы упростим)
+        for (let i = 0; i < 5; i++) {
+            let room = roomsList[Math.floor(Math.random() * roomsList.length)];
+            evidenceRooms[room] = true;
+        }
+        // Чтобы гарантировать 5 улик, перестрахуемся
+        let total = 0;
+        for (let r in evidenceRooms) if (evidenceRooms[r]) total++;
+        if (total < 5) evidenceRooms[roomsList[Math.floor(Math.random()*roomsList.length)]] = true;
+    }
+    
+    // Инициализация
+    function init() {
+        generateEvidence();
+        updateUI();
+        addLog('Игра началась. Следите за камерами и закрывайте дверь при опасности.');
+        
+        // Таймеры игры
+        setInterval(() => timerTick(), 1000);
+        setInterval(() => moveKiller(), 8000); // убийца ходит каждые 8 секунд
+        
+        toggleDoorBtn.onclick = toggleDoor;
+        analyzeBtn.onclick = analyzeEvidence;
+    }
+    
+    init();
+</script>
+</body>
+</html>
